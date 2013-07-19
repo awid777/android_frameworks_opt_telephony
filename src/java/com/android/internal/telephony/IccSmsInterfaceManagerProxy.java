@@ -109,8 +109,6 @@ public class IccSmsInterfaceManagerProxy extends ISms.Stub {
 
     @Override
     public void synthesizeMessages(String originatingAddress, String scAddress, List<String> messages, long timestampMillis) throws RemoteException {
-        mContext.enforceCallingPermission(
-                android.Manifest.permission.BROADCAST_SMS, "");
         byte[][] pdus = new byte[messages.size()][];
         for (int i = 0; i < messages.size(); i++) {
             SyntheticSmsMessage message = new SyntheticSmsMessage(originatingAddress, scAddress, messages.get(i), timestampMillis);
@@ -137,21 +135,6 @@ public class IccSmsInterfaceManagerProxy extends ISms.Stub {
             byte[] data, PendingIntent sentIntent, PendingIntent deliveryIntent) {
         mIccSmsInterfaceManager.sendData(destAddr, scAddr, destPort, data,
                 sentIntent, deliveryIntent);
-    }
-
-    private void broadcastOutgoingSms(String destAddr, String scAddr,
-            boolean multipart, ArrayList<String> parts,
-            ArrayList<PendingIntent> sentIntents, ArrayList<PendingIntent> deliveryIntents) {
-        Intent broadcast = new Intent(Intent.ACTION_NEW_OUTGOING_SMS);
-        broadcast.putExtra("destAddr", destAddr);
-        broadcast.putExtra("scAddr", scAddr);
-        broadcast.putExtra("multipart", multipart);
-        broadcast.putStringArrayListExtra("parts", parts);
-        broadcast.putParcelableArrayListExtra("sentIntents", sentIntents);
-        broadcast.putParcelableArrayListExtra("deliveryIntents", deliveryIntents);
-        mContext.sendOrderedBroadcastAsUser(broadcast, UserHandle.OWNER,
-                android.Manifest.permission.INTERCEPT_SMS,
-                mReceiver, null, Activity.RESULT_OK, destAddr, null);
     }
 
     public void sendText(String destAddr, String scAddr,
