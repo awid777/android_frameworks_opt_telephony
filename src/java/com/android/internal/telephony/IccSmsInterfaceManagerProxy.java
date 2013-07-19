@@ -148,7 +148,6 @@ public class IccSmsInterfaceManagerProxy extends ISms.Stub {
         sentIntents.add(sentIntent);
         ArrayList<PendingIntent> deliveryIntents = new ArrayList<PendingIntent>();
         deliveryIntents.add(deliveryIntent);
-        broadcastOutgoingSms(destAddr, scAddr, false, parts, sentIntents, deliveryIntents);
     }
 
     public void sendMultipartText(String destAddr, String scAddr,
@@ -157,8 +156,6 @@ public class IccSmsInterfaceManagerProxy extends ISms.Stub {
         mContext.enforceCallingPermission(
                 android.Manifest.permission.SEND_SMS,
                 "Sending SMS message");
-        broadcastOutgoingSms(destAddr, scAddr, true, new ArrayList<String>(parts),
-                new ArrayList<PendingIntent>(sentIntents), new ArrayList<PendingIntent>(deliveryIntents));
     }
 
     public boolean enableCellBroadcast(int messageIdentifier) throws android.os.RemoteException {
